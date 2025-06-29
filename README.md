@@ -32,7 +32,7 @@ This is a command-line habit tracking application written in Python 3. It allows
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/habit-tracker.git
+git clone https://github.com/tjraczek/habit-tracker.git
 cd habit-tracker
 ```
 

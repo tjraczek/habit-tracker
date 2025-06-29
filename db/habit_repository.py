@@ -4,6 +4,11 @@ from datetime import datetime
 
 
 def insert_habit(habit: Habit):
+    """" 
+        Desc: Executes SQL command to insert a new habit
+        Args: Habit object
+        Returns: /
+    """
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("""
@@ -20,6 +25,11 @@ def insert_habit(habit: Habit):
 
 
 def get_habit_by_id(id: int):
+    """" 
+        Desc: Executes SQL command to read one habit
+        Args: ID of habit
+        Returns: Habit object
+    """
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM habits WHERE id = ?", (id,))
@@ -28,6 +38,11 @@ def get_habit_by_id(id: int):
 
 
 def get_all_habits():
+    """" 
+        Desc: Executes SQL command to read all habit
+        Args: /
+        Returns: List of Habit objects
+    """
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM habits")
@@ -36,6 +51,11 @@ def get_all_habits():
     
 
 def get_habits_by_frequency(frequency: Frequency):
+    """" 
+        Desc: Executes SQL command to read all habits filtered by frequency
+        Args: frequency (daily, weekly, biweekly, monthly)
+        Returns: List of filtered Habit objects
+    """
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("SELECT * FROM habits WHERE frequency=?", (frequency.value,))
@@ -44,6 +64,11 @@ def get_habits_by_frequency(frequency: Frequency):
 
 
 def update_habit(id: int, habit: Habit):
+    """" 
+        Desc: Executes SQL command to update existing habit
+        Args: ID of habit, updated habit object
+        Returns: /
+    """
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("""
@@ -61,6 +86,11 @@ def update_habit(id: int, habit: Habit):
 
 
 def delete_habit(id: int):
+    """" 
+        Desc: Executes SQL command to delete one specific habit
+        Args: ID of habit to be deleted
+        Returns: /
+    """
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("DELETE FROM habits WHERE id = ?", (id,))
@@ -68,6 +98,11 @@ def delete_habit(id: int):
         return cursor.rowcount > 0
 
 def delete_all_habits():
+    """" 
+        Desc: Executes SQL command to delete all habits
+        Args: /
+        Returns: /
+    """
     with get_connection() as conn:
         cursor = conn.cursor()
         cursor.execute("DELETE FROM habits")
