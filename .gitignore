@@ -1,0 +1,16 @@
+# Python virtual environment
+venv/
+
+# SQLite database file
+habits.db
+
+# Pytest cache
+.pytest_cache/
+
+# VSCode settings (optional)
+.vscode/
+
+# OS / Editor files
+__pycache__/
+*.pyc
+.DS_Store
