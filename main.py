@@ -7,21 +7,23 @@ from scripts.seed_fixtures import create_sample_habits, seed_sample_completions
 from scripts.clear_db import reset
 
 # Habit functions
-""" prints all habits """
 def get_all_habits_cli():
+    """ prints all habits """
     habits = habit_controller.get_all_habits()
     for habit in habits:
         print(habit)
 
-""" prints all habits for a certain frequency """
+
 def get_habits_by_frequency_cli():
+    """ prints all habits for a certain frequency """
     freq_input = input("Frequency (daily, weekly, biweekly, monthly): ").lower()
     habits = habit_controller.get_habits_by_frequency(freq_input)
     for habit in habits:
         print(habit)
 
-""" gets user input to create new habit """     
+
 def create_habit_cli():
+    """ gets user input to create new habit """   
     title = input("Title: ")
     desc = input("Description: ")
     freq_input = input("Frequency (daily, weekly, biweekly, monthly): ").lower()
@@ -43,29 +45,74 @@ def create_habit_cli():
     habit_controller.add_habit(habit)
     print("Habit created.")
 
-""" Lists all open habits for today and let's the user complete a habit for today """
+
+def update_habit_cli():
+    """Gets ID and new details to update a habit"""
+    habit_id = int(input("Habit ID to update: "))
+
+    habit = habit_controller.get_habit(habit_id)
+    if not habit:
+        print("Habit not found.")
+        return
+
+    new_title = input(f"New title (leave blank to keep '{habit.title}'): ")
+    new_desc = input(f"New description (leave blank to keep current): ")
+    new_freq_input = input(f"New frequency (daily, weekly, biweekly, monthly) (leave blank to keep '{habit.frequency.value}'): ").lower()
+
+    # Use old values if left blank
+    if not new_title:
+        new_title = habit.title
+    if not new_desc:
+        new_desc = habit.description
+    if new_freq_input:
+        try:
+            new_frequency = Frequency(new_freq_input)
+        except ValueError:
+            print("Invalid frequency.")
+            return
+    else:
+        new_frequency = habit.frequency
+
+    updated_habit = Habit(
+        id=habit_id,
+        title=new_title,
+        description=new_desc,
+        frequency=new_frequency,
+        created_at=habit.created_at
+    )
+
+    success = habit_controller.update_habit(habit_id, updated_habit)
+    if success:
+        print("Habit updated.")
+    else:
+        print("Failed to update habit.")
+
+
 def mark_completed_cli():
+    """ Lists all open habits for today and let's the user complete a habit for today """
     show_open_tasks_for_today_cli()
     time.sleep(2)
     habit_id = int(input("Habit ID to mark as complete: "))
     habit_completion_controller.complete_habit(habit_id)
 
-""" gets ID from user to delete a habit """
+
 def delete_habit_cli():
+    """ gets ID from user to delete a habit """
     habit_id = int(input("Habit ID to delete: "))
     if habit_controller.delete_habit(habit_id):
         print("Habit deleted.")
     else:
         print("Habit not found.")
 
-""" executes script to delete all entries from the database """
+
 def reset_db():
+    """ executes script to delete all entries from the database """
     reset()
     
 
 # Analytics functions
-""" shows habits that still need to be completed today """
 def show_open_tasks_for_today_cli():
+    """ shows habits that still need to be completed today """
     open_habits = analytics_controller.get_open_tasks_for_today()
     if not open_habits:
         print("All tasks completed for today!")
@@ -76,6 +123,7 @@ def show_open_tasks_for_today_cli():
 
 
 def show_current_streak_for_habit_cli():
+    """ shows current streak for a specific habit """
     habit_id = int(input("Habit ID: "))
     result = analytics_controller.get_current_streak_for_habit(habit_id)
     if result:
@@ -85,18 +133,21 @@ def show_current_streak_for_habit_cli():
 
 
 def show_current_streaks_cli():
+    """ prints currently active streaks """
     streaks = analytics_controller.get_current_streaks()
     for habit_id, data in streaks.items():
         print(f"{data['title']} [ID {habit_id}]: current streak → {data['streak']} periods")
 
 
 def show_longest_streaks_cli():
+    """ prints longest streaks in whole usage history """
     streaks = analytics_controller.get_longest_streaks()
     for habit_id, data in streaks.items():
         print(f"{data['title']} [ID {habit_id}]: longest streak → {data['streak']} periods")
 
 
 def show_longest_streak_for_habit_cli():
+    """ prints longest streak for a specific habit """
     habit_id = int(input("Habit ID: "))
     result = analytics_controller.get_longest_streak_for_habit(habit_id)
     if result:
@@ -106,6 +157,7 @@ def show_longest_streak_for_habit_cli():
   
 
 def view_completions_cli():
+    """ prints dates of completions for a specific habit """
     habit_id = int(input("Habit ID to view completions: "))
     completions = habit_completion_controller.get_completions(habit_id)
     print(f"Completions for Habit {habit_id}:")
@@ -113,6 +165,7 @@ def view_completions_cli():
         print("-", dt.strftime("%Y-%m-%d %H:%M"))
 
 def show_broken_habits_cli():
+    """ prints habits where streak is currently interrupted """
     broken = analytics_controller.get_broken_habits()
     if not broken:
         print("No broken habits!")
@@ -130,7 +183,8 @@ def habits_menu():
         print("3. Create a new habit")
         print("4. Mark habit as completed")
         print("5. Delete a habit")
-        print("6. Reset DB")
+        print("6. Update a habit")
+        print("7. Reset DB")
         print("X. Back to main menu")
 
         choice = input("\nEnter your choice: ").strip().lower()
@@ -146,6 +200,8 @@ def habits_menu():
         elif choice == "5":
             delete_habit_cli()
         elif choice == "6":
+            update_habit_cli()
+        elif choice == "7":
             reset_db()
         elif choice == "x":
             break

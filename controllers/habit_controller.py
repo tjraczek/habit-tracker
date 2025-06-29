@@ -3,7 +3,7 @@ from models.habit import Frequency, Habit
 
 def add_habit(habit: Habit):
     """" 
-        Controller which adds a habit to the database
+        Desc: Controller which adds a habit to the database
         Args: habit object
         Returns: call to habit repository
     """
@@ -27,7 +27,7 @@ def get_all_habits():
 
 def get_habits_by_frequency(freq_string: str):
     """ 
-        Controller which gets all habits for a specific frequency
+        Desc: Controller which gets all habits for a specific frequency
         Args: Frequency enum (daily, weekly, biweekly, monthly)
         Returns: Filtered list of habit objects
     """
@@ -39,7 +39,7 @@ def get_habits_by_frequency(freq_string: str):
 
 def update_habit(id: int, updated_habit: Habit):
     """ 
-        Controller which updates the habit
+        Desc: Controller which updates the habit
         Args: ID of habit to be updated, Updated habit object
         Returns: Call to habit repository
     """
@@ -47,7 +47,7 @@ def update_habit(id: int, updated_habit: Habit):
 
 def delete_habit(id: int):
     """" 
-        Controller which deletes a specific habit
+        Desc: Controller which deletes a specific habit
         Args: ID of the habit to be deleted
         Returns: Call to habit repository
     """
